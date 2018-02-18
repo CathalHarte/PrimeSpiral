@@ -1,5 +1,6 @@
 % Takes the dimension of the square, and the pixel to number ratio as
 % input, creates the prime spiral pixelmap
+clear
 close all
 
 dim = 199; % Dimension should be odd, so that there is a center pixel
@@ -11,21 +12,34 @@ Spiral = zeros(dim);
 center = ceil(dim/2);
 euclid = [ center center ];
 turn = [ 0 0; 1 0 ];
-rim = [ 0 0 ]'; % Coordinate system for the spiral arranged as 
-    % [layer, displacement around that layer from the bottom right corner]'
-% The length of each rim_i,j layer j is from 1 upwards  8*(j)
+rim = [1 0 0]';
+% rim_i is the layer
+% rim_j is the edge, so we go from 0 - 3
+% The length of edge is 2*rim_i
+% rim_k is how far along that edge we have progressed
 for i = 1:dimsquared
-    Spiral(euclid(1), euclid(2)) = primeDots(i);
-    if rim(2) - 8*(rim(1)) == 0
-        rim(1) = rim(1) + 1;
-        rim(2) = 1;  
-        euclid = center + [ rim(1) rim(1) ];
-    else
+    if rim(2) == 0
+        euclid(1) = center - rim(1) + rim(3);
+        euclid(2) = center + rim(1);
+    elseif rim(2) == 1
+        euclid(1) = center + rim(1);
+        euclid(2) = center + rim(1) - rim(3);
+    elseif rim(2) == 2
+        euclid(1) = center + rim(1) - rim(3);
+        euclid(2) = center - rim(1);
+    else 
+        euclid(1) = center - rim(1);
+        euclid(2) = center - rim(1) + rim(3);
+    end
+    Spiral(euclid(1)+1, euclid(2)+1) = primeDots(i);
+    rim(3) = rim(3) + 1;
+    if rim(3) == 2*rim(1)
+        rim(3) = 0;
         rim(2) = rim(2) + 1;
-        euclid = euclid + [ 1 0 ];
-        euclid = euclid + [ 0 1 ];
-        euclid = euclid + [ -1 0 ];
-        euclid = euclid + [ 0 -1 ];
+        if rim(2) > 3
+            rim(2) = 0;
+            rim(1) = rim(1) + 1;
+        end
     end
 end
 
