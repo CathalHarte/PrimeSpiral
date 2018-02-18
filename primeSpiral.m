@@ -10,7 +10,7 @@ ratio = 1;
 primeDots = ~isprime(1:dimsquared);
 Spiral = zeros(dim);
 center = ceil(dim/2);
-euclid = [ center center ];
+euclid = [ center; center ];
 turn = [ 0 0; 1 0 ];
 rim = [1 0 0]';
 % rim_i is the layer
@@ -18,7 +18,7 @@ rim = [1 0 0]';
 % The length of edge is 2*rim_i
 % rim_k is how far along that edge we have progressed
 for i = 1:dimsquared
-    if rim(2) == 0
+    if rim(2) == 0 % Todo: make this piece of logic into a concise function
         euclid(1) = center - rim(1) + rim(3);
         euclid(2) = center + rim(1);
     elseif rim(2) == 1
@@ -32,7 +32,7 @@ for i = 1:dimsquared
         euclid(2) = center - rim(1) + rim(3);
     end
     Spiral(euclid(1)+1, euclid(2)+1) = primeDots(i);
-    rim(3) = rim(3) + 1;
+    rim(3) = rim(3) + 1; % Overflow logic
     if rim(3) == 2*rim(1)
         rim(3) = 0;
         rim(2) = rim(2) + 1;
